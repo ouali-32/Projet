@@ -26,4 +26,4 @@ jobs:
 
     - name: Lancer les tests
       run: |
-        python test_script.py
+        python test_sql.py
