@@ -13,6 +13,9 @@ from pyzbar.pyzbar import decode
 from PIL import Image
 
 app = Flask(__name__)
+@app.route('/health')
+def health():
+    return "OK", 200
 
 # Configuration MySQL Docker
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://qr_user:@localhost/qr_secure'
@@ -28,7 +31,7 @@ class QRCode(db.Model):
 
 # Chargement clé publique
 # Remplacer le chemin par le chemin COMPLET vers public_key.pem
-key_path = r"C:\Users\ouali\Desktop\public_key.pem"
+key_path = os.path.join(os.path.dirname(__file__), 'public_key.pem')
 with open(key_path, 'rb') as f:
     public_key = serialization.load_pem_public_key(f.read(), backend=default_backend())
 
@@ -77,5 +80,6 @@ def verify_qr():
 with app.app_context():
     db.create_all()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+  port = int(os.environ.get("PORT", 5000))
+  app.run(host="0.0.0.0", port=port) 

@@ -2,8 +2,9 @@ from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.backends import default_backend
 import base64
+import os
 
-PRIVATE_KEY_PATH = r"C:\Users\ouali\Desktop\private_key.pem"
+PRIVATE_KEY_PATH = os.path.join(os.path.dirname(__file__), 'private_key.pem')
 
 def load_private_key():
     with open(PRIVATE_KEY_PATH, "rb") as key_file:
