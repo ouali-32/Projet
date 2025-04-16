@@ -1,7 +1,0 @@
-flask
-flask_sqlalchemy
-pymysql
-qrcode
-pyzbar
-Pillow
-cryptography
