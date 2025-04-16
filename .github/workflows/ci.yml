@@ -23,7 +23,7 @@ jobs:
     - name: Start server and run tests
       run: |
         # Lance le serveur en arrière-plan avec logging
-        python votre_serveur.py > server.log 2>&1 &
+        python appV2.py > server.log 2>&1 &
         
         # Attend que le serveur soit prêt (version améliorée)
         for i in {1..10}; do
@@ -42,4 +42,4 @@ jobs:
         python test_sql.py || exit 1
         
         # Tue le processus serveur
-        pkill -f "python votre_serveur.py"
+        pkill -f "python appV2.py"
