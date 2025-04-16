@@ -16,9 +16,7 @@ app = Flask(__name__)
 @app.route('/health')
 def health():
     return "OK", 200
-
-# Configuration MySQL Docker
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://qr_user:@localhost/qr_secure'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'mysql+pymysql://root:root@localhost:3306/testdb')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)

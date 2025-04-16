@@ -6,13 +6,23 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    
     steps:
     - uses: actions/checkout@v4
     
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libzbar0  # Installation de la dépendance système pour pyzbar
+        sudo apt-get install -y libzbar0
         
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -24,20 +34,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Start server and verify
+    - name: Configure database connection
       run: |
-        # Démarrer le serveur en arrière-plan avec logging
+        echo "DATABASE_URI=mysql+pymysql://root:root@localhost:3306/testdb" >> $GITHUB_ENV
+        
+    - name: Start server and run tests
+      run: |
+        # Démarrer le serveur avec la configuration de test
         python appV2.py > server.log 2>&1 &
         
-        # Vérification que le serveur est prêt
+        # Attendre que le serveur soit prêt
         echo "Waiting for server to start..."
-        sleep 5
+        sleep 10
+        
+        # Vérifier que le serveur est en cours d'exécution
         if ! curl -s http://localhost:5000/health; then
           echo "Server failed to start. Logs:"
           cat server.log
           exit 1
         fi
         
-    - name: Run tests
-      run: |
+        # Exécuter les tests
         python test_sql.py
