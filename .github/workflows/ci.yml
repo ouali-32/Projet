@@ -7,23 +7,25 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Cloner le dépôt
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Installer Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Installer les dépendances
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Lancer les tests
-      run: |
-        python test_sql.py
+      - name: Start server in background
+        run: |
+          python appV2.py &  # Lance le serveur en arrière-plan
+          sleep 5  # Attend que le serveur soit prêt
+
+      - name: Run tests
+        run: |
+          python test_sql.py
