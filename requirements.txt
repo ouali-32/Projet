@@ -5,3 +5,4 @@ qrcode
 pyzbar
 Pillow
 cryptography
+requests
